@@ -57,14 +57,6 @@ public abstract class Conta implements TransacoesBancarias {
         return saldo;
     }
 
-    public void gerarCalculo(Double saldo, LocalDateTime data, boolean debitar,
-                             TipoAcaoBancaria tipoAcao, Cliente cliente) {
-        adicionarExtrato(saldo, data, tipoAcao, cliente, debitar);
-        this.extratos.sort(Comparator.comparing(Extrato::getHorario));
-        this.saldo = this.extratos.stream().mapToDouble(Extrato::getValor).sum();
-
-    }
-
     public List<Extrato> getExtratos() {
         return extratos;
     }
@@ -86,6 +78,14 @@ public abstract class Conta implements TransacoesBancarias {
                                  TipoAcaoBancaria tipoAcao, Cliente cliente, boolean debitar) {
         Extrato extrato = new Extrato(valor, cliente, data, tipoAcao, debitar);
         this.extratos.add(extrato);
+    }
+
+    public void gerarCalculo(Double saldo, LocalDateTime data, boolean debitar,
+                             TipoAcaoBancaria tipoAcao, Cliente cliente) {
+        adicionarExtrato(saldo, data, tipoAcao, cliente, debitar);
+        this.extratos.sort(Comparator.comparing(Extrato::getHorario));
+        this.saldo = this.extratos.stream().mapToDouble(Extrato::getValor).sum();
+
     }
 
     public void gerarSubTotal(){

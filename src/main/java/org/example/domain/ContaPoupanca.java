@@ -33,7 +33,7 @@ public class ContaPoupanca extends Conta implements TransacoesComplexas {
 
     @Override
     public Double saque(Double valor, LocalDateTime diaSaque, Cliente cliente) {
-        super.gerarCalculo(valor, diaSaque, true, TipoAcaoBancaria.SAQUE, cliente);
+        super.gerarCalculo(valor*1.05, diaSaque, true, TipoAcaoBancaria.SAQUE, cliente);
         return super.getSaldo();
     }
 
