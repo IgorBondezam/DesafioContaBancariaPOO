@@ -24,16 +24,13 @@ public class ContaService {
                 .findFirst().orElseThrow(() -> new ErrorFindConta("Conta não existente!"));
     }
 
-    public void trocarContaPrincipal(Cliente cliente, Long numeroConta){
+    public Conta findConta(Cliente cliente, Long numeroConta) throws ErrorFindConta {
         List<Conta> contas = new ArrayList<>();
         contas.addAll(cliente.getContaCC());
         contas.addAll(cliente.getContaCP());
         contas.addAll(cliente.getContaCS());
 
-        try{
-            cliente.setContaPrincipal(findContaCorrenteByNumeroConta(cliente, numeroConta));
-        } catch (ErrorFindConta e) {
-            System.out.println(e.getMessage());
-        }
+        return contas.stream().filter(conta -> Objects.equals(conta.getNumeroConta(), numeroConta))
+                .findFirst().orElseThrow(() -> new ErrorFindConta("Conta não existente!"));
     }
 }

@@ -19,30 +19,35 @@ public class ContaCorrente extends Conta implements TransacoesComplexas {
         super(numeroConta, banco, saldo, TipoAcaoBancaria.CRIACAO_CONTA, contaConjunta);
     }
 
+    public ContaCorrente(Long numeroConta, Banco banco, Double saldo,
+                         LocalDateTime dataCriacao, boolean conjunta) {
+        super(numeroConta, banco, saldo, TipoAcaoBancaria.CRIACAO_CONTA, dataCriacao, conjunta);
+    }
+
     @Override
-    public Double deposito(Double valor, LocalDateTime diaDeposito, Cliente cliente) {
-        super.gerarCalculo(valor, diaDeposito, false, TipoAcaoBancaria.DEPOSITO, cliente);
+    public Double deposito(Double valor, LocalDateTime diaDeposito) {
+        super.gerarCalculo(valor, diaDeposito, false, TipoAcaoBancaria.DEPOSITO, super.getCliente());
         return super.getSaldo();
     }
 
     @Override
-    public Double saque(Double valor, LocalDateTime diaSaque, Cliente cliente) {
-        super.gerarCalculo(valor, diaSaque, true,TipoAcaoBancaria.SAQUE, cliente);
+    public Double saque(Double valor, LocalDateTime diaSaque) {
+        super.gerarCalculo(valor, diaSaque, true,TipoAcaoBancaria.SAQUE, super.getCliente());
         return super.getSaldo();
     }
 
 
     @Override
-    public void financiar(Double valorFinanciado, Long mesesParcelados, Cliente cliente, LocalDateTime diaInicio) throws ErrorFinanciamento {
+    public void financiar(Double valorFinanciado, Long mesesParcelados, LocalDateTime diaInicio) throws ErrorFinanciamento {
         if(mesesParcelados < 24){
             throw new ErrorFinanciamento("Para Conta Corrente - Há um valor mínimo de 24 parcelas!");
         }
         if(valorFinanciado < 60000){
             throw new ErrorFinanciamento("Para Conta Corrente - Há um valor mínimo de R$ 60.000,00 como valor de financiamento!");
         }
-        super.getFinanciamentos().addAll(gerarFinanciamentos(valorFinanciado, diaInicio, mesesParcelados, cliente));
+        super.getFinanciamentos().addAll(gerarFinanciamentos(valorFinanciado, diaInicio, mesesParcelados, super.getCliente()));
 
-        validarMesesPagos(super.getFinanciamentos(), cliente);
+        validarMesesPagos(super.getFinanciamentos(), super.getCliente());
     }
 
     private List<Financiamento> gerarFinanciamentos(Double valorFinanciado, LocalDateTime diaInicio,
@@ -75,9 +80,9 @@ public class ContaCorrente extends Conta implements TransacoesComplexas {
     }
 
     @Override
-    public void aplicacao(Double valorAplicacao, LocalDateTime diaInicio, AplicacaoCID aplicacaoCID, Cliente cliente) {
-        super.getAplicacaos().addAll(gerarAplicacoes(valorAplicacao, diaInicio, cliente, aplicacaoCID));
-        validarMesesRecebidos(super.getAplicacaos(), cliente);
+    public void aplicacao(Double valorAplicacao, LocalDateTime diaInicio, AplicacaoCID aplicacaoCID) {
+        super.getAplicacaos().addAll(gerarAplicacoes(valorAplicacao, diaInicio, super.getCliente(), aplicacaoCID));
+        validarMesesRecebidos(super.getAplicacaos(), super.getCliente());
     }
 
     private List<Aplicacao> gerarAplicacoes(Double valorAplicado, LocalDateTime diaInicio,

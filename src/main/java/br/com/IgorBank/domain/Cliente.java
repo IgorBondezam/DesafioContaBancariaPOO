@@ -69,13 +69,13 @@ public class Cliente {
     }
 
     public void setVinculo(Cliente vinculo) throws DiferentTypeVinculo {
-        if(this.getClass() == vinculo.getClass()){
-            this.vinculo = vinculo;
+        if(this.getClass() != vinculo.getClass()){
+            throw new DiferentTypeVinculo();
         }
-        throw new DiferentTypeVinculo();
+        this.vinculo = vinculo;
     }
 
-    public void relacionarContaCliente(Conta conta) throws ErrorCreateConta {
+    public void criarContaConjunta(Conta conta) throws ErrorCreateConta {
         adicionarConta(conta);
         adicionarContaConjunta(conta);
     }
@@ -88,7 +88,7 @@ public class Cliente {
         this.contaPrincipal = contaPrincipal;
     }
 
-    protected void adicionarConta(Conta conta) {
+    public void adicionarConta(Conta conta) {
         conta.setCliente(this);
         if (conta instanceof ContaCorrente) {
             this.contaCC.add((ContaCorrente) conta);

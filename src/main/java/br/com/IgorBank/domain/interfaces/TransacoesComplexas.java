@@ -7,10 +7,9 @@ import java.time.LocalDateTime;
 
 public interface TransacoesComplexas {
 
-    void financiar(Double valorFinanciado, Long mesesParcelados,
-                   Cliente cliente, LocalDateTime diaInicio) throws Exception;
+    void financiar(Double valorFinanciado, Long mesesParcelados, LocalDateTime diaInicio) throws Exception;
 
-    void aplicacao(Double valorAplicacao, LocalDateTime diaInicio, AplicacaoCID aplicacaoCID, Cliente cliente);
+    void aplicacao(Double valorAplicacao, LocalDateTime diaInicio, AplicacaoCID aplicacaoCID);
 
 
 }

@@ -21,29 +21,29 @@ public class ContaPoupanca extends Conta implements TransacoesComplexas {
 
     public ContaPoupanca(Long numeroConta, Banco banco, Double saldo,
                          LocalDateTime dataCriacao, boolean conjunta) {
-        super(numeroConta, banco, saldo, TipoAcaoBancaria.CRIACAO_CONTA, dataCriacao, conjunta);
+        super(numeroConta, banco, 50 + saldo, TipoAcaoBancaria.CRIACAO_CONTA, dataCriacao, conjunta);
     }
 
     @Override
-    public Double deposito(Double valor, LocalDateTime diaDeposito, Cliente cliente) {
-        super.gerarCalculo(valor, diaDeposito, false, TipoAcaoBancaria.DEPOSITO, cliente);
+    public Double deposito(Double valor, LocalDateTime diaDeposito) {
+        super.gerarCalculo(valor, diaDeposito, false, TipoAcaoBancaria.DEPOSITO, super.getCliente());
         return super.getSaldo();
     }
 
     @Override
-    public Double saque(Double valor, LocalDateTime diaSaque, Cliente cliente) {
-        super.gerarCalculo(valor*1.05, diaSaque, true, TipoAcaoBancaria.SAQUE, cliente);
+    public Double saque(Double valor, LocalDateTime diaSaque) {
+        super.gerarCalculo(valor*1.05, diaSaque, true, TipoAcaoBancaria.SAQUE, super.getCliente());
         return super.getSaldo();
     }
 
     @Override
-    public void financiar(Double valorFinanciado, Long mesesParcelados, Cliente cliente, LocalDateTime diaInicio) throws ErrorFinanciamento {
+    public void financiar(Double valorFinanciado, Long mesesParcelados, LocalDateTime diaInicio) throws ErrorFinanciamento {
         if(mesesParcelados < 12){
             throw new ErrorFinanciamento("Para Conta Poupança - Há um valor mínimo de 12 parcelas!");
         }
-        super.getFinanciamentos().addAll(gerarFinanciamentos(valorFinanciado, diaInicio, mesesParcelados, cliente));
+        super.getFinanciamentos().addAll(gerarFinanciamentos(valorFinanciado, diaInicio, mesesParcelados, super.getCliente()));
 
-        validarMesesPagos(super.getFinanciamentos(), cliente);
+        validarMesesPagos(super.getFinanciamentos(), super.getCliente());
     }
 
     private List<Financiamento> gerarFinanciamentos(Double valorFinanciado, LocalDateTime diaInicio,
@@ -76,9 +76,9 @@ public class ContaPoupanca extends Conta implements TransacoesComplexas {
     }
 
     @Override
-    public void aplicacao(Double valorAplicacao, LocalDateTime diaInicio, AplicacaoCID aplicacaoCID, Cliente cliente) {
-        super.getAplicacaos().addAll(gerarAplicacoes(valorAplicacao, diaInicio, cliente, aplicacaoCID));
-        validarMesesRecebidos(super.getAplicacaos(), cliente);
+    public void aplicacao(Double valorAplicacao, LocalDateTime diaInicio, AplicacaoCID aplicacaoCID) {
+        super.getAplicacaos().addAll(gerarAplicacoes(valorAplicacao, diaInicio, super.getCliente(), aplicacaoCID));
+        validarMesesRecebidos(super.getAplicacaos(), super.getCliente());
     }
 
     private List<Aplicacao> gerarAplicacoes(Double valorAplicado, LocalDateTime diaInicio,

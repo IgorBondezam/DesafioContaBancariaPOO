@@ -1,20 +1,23 @@
 package br.com.IgorBank.service;
 
 import br.com.IgorBank.domain.Conta;
+import br.com.IgorBank.domain.Extrato;
 
 import java.time.LocalDate;
+import java.util.stream.Collectors;
 
 public class ExtratoService {
 
-    public void visualizarExtratoPorPeriodo(LocalDate dataInicial, LocalDate dataFim, Conta conta){
+    public String  visualizarExtratoPorPeriodo(LocalDate dataInicial, LocalDate dataFim, Conta conta){
         conta.gerarSubTotal();
-        conta.getExtratos().stream().filter(extrato -> extrato.getHorario()
+        return conta.getExtratos().stream().filter(extrato -> extrato.getHorario()
                 .isBefore(dataFim.atStartOfDay())
-                && extrato.getHorario().isAfter(dataInicial.atStartOfDay())).forEach(System.out::println);
+                && extrato.getHorario().isAfter(dataInicial.atStartOfDay()))
+                        .map(Extrato::toString).collect(Collectors.joining());
     }
 
-    public void visualizarTodoExtrato(Conta conta){
+    public String visualizarTodoExtrato(Conta conta){
         conta.gerarSubTotal();
-        conta.getExtratos().forEach(System.out::println);
+        return conta.getExtratos().stream().map(Extrato::toString).collect(Collectors.joining());
     }
 }
